@@ -2239,7 +2239,7 @@
             <button type="button" class="btn gold small" id="addModuleBtn" ${disAttr}>+ Add Module</button>
             <button type="button" class="btn small" id="panelDownloadHtmlBtn">📄 Preview &amp; Download HTML</button>
             <button type="button" class="btn small" id="panelDownloadStyledBtn">📊 Editable Excel</button>
-            <button type="button" class="btn small" id="panelDownloadOrigBtn" ${ro.sourceMeta ? '' : 'disabled'}>🔄 Original Excel (Write-Back)</button>
+            <button type="button" class="btn small" id="panelDownloadOrigBtn" ${ro.sourceMeta ? '' : 'disabled title="Import from Excel first: this exports the original file with your edits, not a generated copy"'}>🔄 Download Original Excel (with edits)</button>
           </div>
         </div>
 
