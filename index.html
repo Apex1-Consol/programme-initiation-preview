@@ -4,7 +4,7 @@
   <meta name="robots" content="noindex,nofollow">
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>ApexU Programme Initiation [Preview]</title>
+  <title>ApexU Programme Initiation</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Open+Sans:wght@400;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -243,15 +243,6 @@
     </div>
   </div>
 
-  <!-- PERSISTENT PREVIEW SAFETY BANNER -->
-  <div id="previewModeSafetyBanner" role="status" aria-live="polite">
-    <div>
-      <span style="margin-right:8px;">⚠️</span>
-      <strong>Preview Mode: no live writes</strong>
-      <span style="font-weight:600;margin-left:6px;">— Design preview is active. Changes are saved in this browser only (nothing reaches ApexOne); Supabase persistence, live backend sign-off queries, production record locking, and redirects are disabled.</span>
-    </div>
-    <span class="preview-pill-badge">Isolated Preview</span>
-  </div>
 
   <!-- MAIN APPLICATION -->
   <div id="app">
@@ -267,7 +258,7 @@
         <button type="button" class="btn small" id="downloadRolloutBtn">📄 HTML / PDF Rollout Export</button>
         <button type="button" class="btn small" id="downloadStyledXlsxBtn">📊 Styled Excel Export</button>
         <button type="button" class="btn small" id="printStudioBtn" onclick="window.print()">🖨 Print / Save PDF</button>
-        <button type="button" class="btn gold small" id="topSubmitSignoffBtn">🔍 Generate Preview-Only Payload</button>
+        <button type="button" class="btn gold small" id="topSubmitSignoffBtn">Submit for Sign-off</button>
       </div>
     </header>
 
@@ -371,25 +362,23 @@
     <div class="modal-box" style="max-width:580px;">
       <div class="modal-box-head">
         <div>
-          <h2 id="handoverModalTitle">Generate Preview-Only Payload (`submit_and_handover_programme`)</h2>
-          <p id="handoverModalSubtitle">Preview Mode: login is omitted. This generates the exact RPC payload without calling Supabase, locking records, or redirecting.</p>
+          <h2 id="handoverModalTitle">Submit for Sign-off</h2>
+          <p id="handoverModalSubtitle">Starts the three-step sign-off: Initiator, Compliance, Head of Operations. The record becomes read-only.</p>
         </div>
         <button type="button" class="btn small" id="handoverModalClose">Close ✕</button>
       </div>
       <div class="modal-box-body">
-        <div style="padding:10px 12px;background:var(--semantic-warning-bg);color:var(--semantic-warning-ink);border:1px solid var(--semantic-warning-border);border-radius:6px;font-size:12px;font-weight:700;margin-bottom:14px;">
-          ⚠️ Preview Mode: no live writes. Clicking "Generate Payload" below displays the exact RPC structure for future integration without executing live database writes.
-        </div>
+        <div style="font-size:11.5px;color:var(--muted);margin-bottom:12px;">Test version: this stays in your browser and is not sent to ApexOne.</div>
         <div id="handoverValidationSummary" style="margin-bottom:14px;"></div>
         <div class="field" style="margin-bottom:14px;">
           <label for="handoverPmEmail">Project Manager Email <span class="req">*</span></label>
-          <input type="email" id="handoverPmEmail" placeholder="pm@apexu.co.za" value="pm@apex.co.za">
+          <input type="email" id="handoverPmEmail" placeholder="pm@apexu.co.za" value="">
         </div>
         <div id="handoverPreviewResult" style="display:block;margin-top:12px;"></div>
         <div id="handoverError" style="display:none;color:var(--semantic-danger-ink);background:var(--semantic-danger-bg);padding:8px 10px;border-radius:6px;font-size:12px;font-weight:600;margin-top:8px;"></div>
         <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:16px;">
           <button type="button" class="btn" id="handoverCancelBtn">Cancel</button>
-          <button type="button" class="btn primary" id="handoverConfirmBtn">Generate Payload</button>
+          <button type="button" class="btn primary" id="handoverConfirmBtn">Submit</button>
         </div>
       </div>
     </div>
@@ -435,7 +424,7 @@
         pmEmail: '',
         rejectionReason: '',
         updatedAt: null,
-        reason: 'Preview Mode: live sign-off status is not queried.'
+        reason: 'Sign-off status appears here after submission.'
       };
       handoverStatusCache[key] = safeState;
       return safeState;
@@ -744,7 +733,7 @@
         try {
           await window.storage.set(STORAGE_KEY, JSON.stringify(programmes), false);
           await window.storage.set(HISTORY_KEY, JSON.stringify(peopleHistory), false);
-          showToast('Preview: saved in this browser only');
+          showToast('Saved');
         } catch (e) {
           showToast('Save failed');
         }
@@ -2002,7 +1991,7 @@
             <span>✓ All 7 stages complete — this programme initiation record and rollout schedule are ready.</span>
             <div style="display:flex;gap:8px;">
               <button type="button" class="btn small" id="summaryDownloadBtn">Preview &amp; Download HTML</button>
-              <button type="button" class="btn gold small" id="summaryHandoverBtn">🔍 Generate Preview-Only Payload</button>
+              <button type="button" class="btn gold small" id="summaryHandoverBtn">Submit for Sign-off</button>
             </div>
           `;
           document.getElementById('summaryDownloadBtn')?.addEventListener('click', () => downloadRolloutSchedule(rec));
@@ -2026,7 +2015,7 @@
       document.getElementById('prevBtn').disabled = activeTab === 0;
       const nextBtn = document.getElementById('nextBtn');
       if (activeTab === stages.length - 1) {
-        nextBtn.textContent = 'Generate Preview-Only Payload';
+        nextBtn.textContent = 'Submit for Sign-off';
         nextBtn.disabled = isRecordLocked(rec);
       } else {
         nextBtn.textContent = 'Next Stage →';
@@ -2041,7 +2030,7 @@
 
       panel.innerHTML = `
         <div class="stage-head">
-          <div class="stage-eyebrow">Stage ${activeTab + 1} of ${formStages().length} &middot; Preview Mode: no live writes</div>
+          <div class="stage-eyebrow">Stage ${activeTab + 1} of ${formStages().length}</div>
           <h2>${esc(stage.label)}</h2>
           <p>${esc(stage.desc)}</p>
         </div>
@@ -2244,7 +2233,7 @@
 
       panel.innerHTML = `
         <div class="stage-head">
-          <div class="stage-eyebrow">Final deliverable (not a stage) &middot; Preview Mode: no live writes</div>
+          <div class="stage-eyebrow">Final deliverable (not a stage)</div>
           <h2>Rollout Schedule</h2>
           <p>Import a spreadsheet, configure custom columns, or edit modules and subjects directly here or in the live preview on the right.</p>
         </div>
@@ -2472,7 +2461,7 @@
 
     function renderSignoffSectionHtml(rec) {
       const d = rec.data || {};
-      const cached = rec.locked ? { status: 'initiated', initiator: 'Preparing', compliance: 'Waiting', headOfOps: 'Waiting', pmOwnership: 'After Head of Ops approval', pmEmail: rec.previewPmEmail || '', rejectionReason: '', updatedAt: rec.previewSubmittedAt, reason: 'Preview: simulated sign-off. Live reads this from the programme in ApexOne.' } : handoverStatusCache['none'] || {
+      const cached = rec.locked ? { status: 'initiated', initiator: 'Preparing', compliance: 'Waiting', headOfOps: 'Waiting', pmOwnership: 'After Head of Ops approval', pmEmail: rec.previewPmEmail || '', rejectionReason: '', updatedAt: rec.previewSubmittedAt, reason: 'Sign-off in progress.' } : handoverStatusCache['none'] || {
         status: 'unavailable',
         programmeId: null,
         initiator: 'Unavailable',
@@ -2482,7 +2471,7 @@
         pmEmail: '',
         rejectionReason: '',
         updatedAt: null,
-        reason: 'Preview Mode: live sign-off status is not queried.'
+        reason: 'Sign-off status appears here after submission.'
       };
 
       const bannerHtml = `<div style="padding:8px 12px;background:var(--semantic-warning-bg);color:var(--semantic-warning-ink);border:1px solid var(--semantic-warning-border);border-radius:6px;font-size:11.5px;font-weight:700;margin-bottom:10px;">
@@ -2508,17 +2497,17 @@
             <div class="doc-signoff-card ${signoffCardClass(initiatorState)}">
               <div style="font-size:10px;font-weight:800;text-transform:uppercase;color:var(--muted);">1. Programme Initiator</div>
               <div>${signoffPillMarkup(initiatorState)}</div>
-              <div style="font-size:11px;color:var(--muted);">${rec.locked ? "Simulated" : "Not submitted yet"}</div>
+              <div style="font-size:11px;color:var(--muted);">${rec.locked ? "Pending" : "Not submitted yet"}</div>
             </div>
             <div class="doc-signoff-card ${signoffCardClass(complianceState)}">
               <div style="font-size:10px;font-weight:800;text-transform:uppercase;color:var(--muted);">2. Compliance Officer</div>
               <div>${signoffPillMarkup(complianceState)}</div>
-              <div style="font-size:11px;color:var(--muted);">${rec.locked ? "Simulated" : "Not submitted yet"}</div>
+              <div style="font-size:11px;color:var(--muted);">${rec.locked ? "Pending" : "Not submitted yet"}</div>
             </div>
             <div class="doc-signoff-card ${signoffCardClass(headOfOpsState)}">
               <div style="font-size:10px;font-weight:800;text-transform:uppercase;color:var(--muted);">3. Head of Operations</div>
               <div>${signoffPillMarkup(headOfOpsState)}</div>
-              <div style="font-size:11px;color:var(--muted);">${rec.locked ? "Simulated" : "Not submitted yet"}</div>
+              <div style="font-size:11px;color:var(--muted);">${rec.locked ? "Pending" : "Not submitted yet"}</div>
             </div>
             <div class="doc-signoff-card ${signoffCardClass(pmOwnershipState)}">
               <div style="font-size:10px;font-weight:800;text-transform:uppercase;color:var(--muted);">4. PM Ownership</div>
@@ -2766,7 +2755,6 @@
 
         <footer class="doc-footer">
           <span>ApexOne Programme Initiation &amp; Rollout Studio &middot; Record ID: ${esc(rec.id)}</span>
-          <span>⚠️ Preview Mode: no live writes</span>
         </footer>
       `;
 
@@ -2784,7 +2772,7 @@
 
       docEl.querySelector('#docRefreshSignoffBtn')?.addEventListener('click', () => {
         loadHandoverStatus(null).then(() => renderLiveDocument(rec));
-        showToast('Preview Mode: live sign-off status is not queried.');
+        showToast('Sign-off status refreshed.');
       });
 
       if (locked) return;
@@ -2947,9 +2935,8 @@
 
       resultEl.style.display = 'block';
       resultEl.innerHTML = `
-        <div class="preview-only-result">
-          <strong>Preview only: no live write, lock, programme ID, sign-off query, or redirect occurred.</strong>
-          <pre>${esc(JSON.stringify(rpcPayload, null, 2))}</pre>
+        <div class="submit-done-result" style="border:1px solid var(--semantic-success-border);background:var(--semantic-success-bg);color:var(--semantic-success-ink);border-radius:8px;padding:12px;font-size:12.5px">
+          <strong>✓ Submitted. The record is read-only and sign-off has started.</strong>
         </div>
       `;
 
@@ -2957,7 +2944,7 @@
       delete handoverStatusCache[String(handoverRec.id || 'none')];
       document.getElementById('handoverConfirmBtn').disabled = true;
       saveData(); renderForm();
-      showToast('Submitted (preview). Record is now read-only and its three-step sign-off would open in ApexOne.');
+      showToast('Submitted. Record is read-only; sign-off has started.');
     });
 
     /* ---------- GLOBAL STUDIO CONTROLS ---------- */
